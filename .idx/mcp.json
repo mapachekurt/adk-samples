@@ -9,9 +9,6 @@
         "--only",
         "auth,firestore"
       ]
-    },
-    "firebase-studio-mcp": {
-      "url": "https://1adc35ed-d5d7-4b57-8eb2-eac9472fb1a1-00-10dk9ansc2n25.spock.replit.dev/sse"
     }
   }
 }
