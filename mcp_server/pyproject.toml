@@ -1,7 +1,7 @@
 [project]
 name = "mcp_server"
 version = "0.1.0"
-dependencies = ["python-dotenv"]
+dependencies = ["python-dotenv", "adk-mcp", "httpx", "google-cloud-aiplatform", "google-auth"]
 
 [tool.uv]
 python = "3.11"
