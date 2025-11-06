@@ -12,6 +12,7 @@
     pkgs.jdk
     pkgs.maven
     pkgs.uv
+    pkgs.python311Packages.python-dotenv
     # pkgs.nodejs_20
     # pkgs.nodePackages.nodemon
   ];

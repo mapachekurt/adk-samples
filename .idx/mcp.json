@@ -9,6 +9,13 @@
         "--only",
         "auth,firestore"
       ]
+    },
+    "doc_server": {
+      "command": "uv",
+      "args": [
+        "run",
+        "mcp_server/firebase_docs_mcp.py"
+      ]
     }
   }
 }
