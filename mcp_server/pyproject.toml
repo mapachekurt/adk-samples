@@ -1,0 +1,7 @@
+[project]
+name = "mcp_server"
+version = "0.1.0"
+dependencies = ["python-dotenv"]
+
+[tool.uv]
+python = "3.11"
