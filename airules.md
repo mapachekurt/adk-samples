@@ -19,7 +19,9 @@ These are the most important rules, learned from previous failures. They must be
 
 **3. IDE Workflow is Paramount:** This IDE has a specific UI-driven workflow that overrides standard command-line practices.
     - **Action:** After modifying `.idx/dev.nix`, you **must** instruct the user to **commit the changes** and then explicitly press the **"Rebuild Environment"** button.
-    - **Action:** After committing any code, you **must** remind the user to press the **"Sync Changes"** button to push the commits. You cannot do this yourself and must rely on the user.
+    - **MANDATORY "Commit, then Sync" Two-Step:** The workflow for saving code is a two-step process.
+        1.  First, you run the `git commit` command to save changes locally.
+        2.  Second, you **MUST IMMEDIATELY STOP** all other actions and instruct the user to press the **"Sync Changes"** button to push the local commits to the remote repository. Your *only* response after a successful commit is to issue this instruction.
 
 **4. Streamline Git Commits:** When committing files, combine the `git add` and `git commit` operations into a single command-line instruction whenever possible. Always provide a comprehensive commit message that follows conventional standards (e.g., "feat: Add new feature," "fix: Correct bug," with an explanatory body).
 
@@ -29,8 +31,9 @@ These are the most important rules, learned from previous failures. They must be
 **6. Local Tools are MCP Subprocesses:** To provide custom local tools to the IDE, do not deploy a web service. The IDE runs tools as local subprocesses defined in `.idx/mcp.json`.
     - **Action:** Create a tool as a script. Add a `command` and `args` entry to `.idx/mcp.json` to execute it. Instruct the user to rebuild the environment to activate it.
 
-**7. Execution Must be Context-Aware:** Commands like `uv run` require a `pyproject.toml` in their execution directory.
-    - **Action:** Always run commands from the correct directory. Do not run agent-specific commands from the project root.
+**7. Execution Must be Context-Aware:**
+    - **`uv run`:** This command requires a `pyproject.toml` file in the current directory to define a project. Do not use it for standalone scripts in the root directory.
+    - **Standalone Scripts with `uv`:** To run a script that has dependencies installed via `uv pip install` in the root directory, you **must** execute it using the interpreter from the virtual environment (e.g., `.venv/bin/python your_script.py`). The generic `python3` command will not find the dependencies.
 
 **8. Acknowledge Your Blind Spots:** You cannot "see" the IDE's UI, including uncommitted file changes or error pop-ups.
     - **Action:** If a command fails unexpectedly, your first step is to ask the user if there are any uncommitted changes or UI notifications. Your second step is to run `git status` to get ground truth on the repository's state.
