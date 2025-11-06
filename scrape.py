@@ -28,7 +28,7 @@ def main():
         crawl_result = client.crawl(
             url="https://google.github.io/adk-docs/",
             limit=100,
-            include_paths=["/adk-docs/**"],
+            include_paths=["/adk-docs/.*"],
             scrape_options={
                 "onlyMainContent": True,
             }
