@@ -11,14 +11,18 @@
       ]
     },
     "firecrawl-mcp": {
-      "command": "npx",
+      "command": "/home/user/.nix-profile/bin/uv",
       "args": [
-        "-y",
-        "firecrawl-mcp"
-      ],
-      "env": {
-        "FIRECRAWL_API_KEY": "${env:FIRECRAWL_API_KEY}"
-      }
+        "run",
+        "--cwd",
+        "mcp_server",
+        "uvicorn",
+        "main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000"
+      ]
     }
   }
 }

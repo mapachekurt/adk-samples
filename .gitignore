@@ -4,3 +4,4 @@
 
 # Log files
 firebase-debug.log*
+mcp_server/.env
