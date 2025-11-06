@@ -45,6 +45,8 @@ These are the most important rules, learned from previous failures. They must be
 
 **13. Correct Git History with Amend:** If a secret is accidentally committed, removing it in a new commit is not sufficient. You **must** use `git commit --amend` to modify the faulty commit *before* pushing.
 
+**14. History Rewriting is Required for Blocked Secrets:** If a push is blocked due to a secret, `git commit --amend` is not enough. The secret persists in the branch's history. You must perform an interactive rebase or a `git reset --soft` to a commit *before* the secret was introduced, then create a new, clean commit. This requires a `git push --force`.
+
 ## General Coding & Development Guidelines
 
 - **Language:** Prioritize the patterns and languages used in this project (Python and Java). When creating new Python agents, follow the existing structure.
