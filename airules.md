@@ -47,7 +47,10 @@ These are the most important rules, learned from previous failures. They must be
 
 **14. History Rewriting is Required for Blocked Secrets:** If a push is blocked due to a secret, `git commit --amend` is not enough. The secret persists in the branch's history. You must perform an interactive rebase or a `git reset --soft` to a commit *before* the secret was introduced, then create a new, clean commit. This requires a `git push --force`.
 
-**15. Unified Cloud Run Deployment:** To build and deploy a container to Cloud Run, use the `gcloud run deploy --source` command. This single command handles building, pushing, and deploying, which is more reliable than separate steps. Enable the required APIs (`run.googleapis.com`, `artifactregistry.googleapis.com`, `cloudbuild.googleapis.com`) beforehand.
+**15. Never Commit Log Files:** Log files, such as `firebase-debug.log*`, contain sensitive information and debugging output that should not be part of the repository history. Always add them to `.gitignore`.
+
+**16. Unified Cloud Run Deployment:** To build and deploy a container to Cloud Run, use the `gcloud run deploy --source` command. This single command handles building, pushing, and deploying, which is more reliable than separate steps. Enable the required APIs (`run.googleapis.com`, `artifactregistry.googleapis.com`, `cloudbuild.googleapis.com`) beforehand.
+
 
 ## General Coding & Development Guidelines
 

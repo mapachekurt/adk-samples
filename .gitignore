@@ -1,3 +1,6 @@
 
 # Secrets and environment variables
 .env
+
+# Log files
+firebase-debug.log*
