@@ -14,7 +14,10 @@
       "command": "uv",
       "args": [
         "run",
-        "mcp_server/firebase_docs_mcp.py"
+        "--server-dir",
+        "mcp_server",
+        "python",
+        "firebase_docs_mcp.py"
       ]
     }
   }

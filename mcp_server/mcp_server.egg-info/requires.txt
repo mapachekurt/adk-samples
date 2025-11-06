@@ -1,1 +1,5 @@
 python-dotenv
+adk-mcp
+httpx
+google-cloud-aiplatform
+google-auth
