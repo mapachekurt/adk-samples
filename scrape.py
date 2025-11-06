@@ -24,7 +24,7 @@ def main():
         # Initialize Firecrawl client
         client = Firecrawl(api_key=api_key)
 
-        # Define crawl options
+        # Start the crawl and wait for it to complete
         crawl_result = client.crawl(
             url="https://google.github.io/adk-docs/",
             limit=100,
@@ -34,15 +34,18 @@ def main():
             }
         )
 
-        if crawl_result:
+        # The result is a CrawlJob object; the actual data is in the .data attribute
+        if crawl_result and crawl_result.data:
             output_filename = "adk_docs_scraped.md"
-            print(f"Crawl finished. Scraped {len(crawl_result)} pages. Saving content to {output_filename}...")
+            print(f"Crawl finished. Scraped {len(crawl_result.data)} pages. Saving content to {output_filename}...")
 
             with open(output_filename, "w", encoding="utf-8") as f:
                 # Combine all scraped markdown into one file
-                for page in crawl_result:
-                    f.write(f"# Source: {page['metadata']['sourceURL']}\n\n")
-                    f.write(page['markdown'])
+                for page in crawl_result.data:
+                    # The page object is a Pydantic model, so use attribute access
+                    source_url = page.metadata.source_url if page.metadata else "Unknown URL"
+                    f.write(f"# Source: {source_url}\n\n")
+                    f.write(page.markdown or "")
                     f.write("\n\n---\n\n")
 
             print(f"Full markdown content saved successfully to {output_filename}")
