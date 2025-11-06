@@ -25,22 +25,13 @@ def main():
         client = Firecrawl(api_key=api_key)
 
         # Define crawl options
-        crawler_options = {
-            "limit": 100,
-            "includes": ["/adk-docs/**"],
-            "excludes": [],
-        }
-        page_options = {
-            "onlyMainContent": True,
-        }
-
-        print(f"Calling crawl_url with url='https://google.github.io/adk-docs/', crawler_options={crawler_options}, page_options={page_options}")
-
-        # Start the crawl job with corrected parameters and method
-        crawl_result = client.crawl_url(
+        crawl_result = client.crawl(
             url="https://google.github.io/adk-docs/",
-            crawler_options=crawler_options,
-            page_options=page_options
+            limit=100,
+            include_paths=["/adk-docs/**"],
+            scrape_options={
+                "onlyMainContent": True,
+            }
         )
 
         if crawl_result:
