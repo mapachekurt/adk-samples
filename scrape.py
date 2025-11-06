@@ -22,41 +22,39 @@ def main():
 
     try:
         # Initialize Firecrawl client
-        firecrawl = Firecrawl(api_key=api_key)
+        client = Firecrawl(api_key=api_key)
 
-        # Start the crawl job
-        crawl_result = firecrawl.crawl(
+        # Define crawl options
+        crawler_options = {
+            "limit": 100,
+            "includes": ["/adk-docs/**"],
+            "excludes": [],
+        }
+        page_options = {
+            "onlyMainContent": True,
+        }
+
+        print(f"Calling crawl_url with url='https://google.github.io/adk-docs/', crawler_options={crawler_options}, page_options={page_options}")
+
+        # Start the crawl job with corrected parameters and method
+        crawl_result = client.crawl_url(
             url="https://google.github.io/adk-docs/",
-            params={
-                "crawlerOptions": {
-                    "limit": 100,
-                    "includes": ["/adk-docs/**"], # Crawl only pages under the /adk-docs/ path
-                    "excludes": [],
-                },
-                "pageOptions": {
-                    "onlyMainContent": True, # Extract clean content
-                }
-            }
+            crawler_options=crawler_options,
+            page_options=page_options
         )
-        
-        # The crawl() method in the Python SDK is synchronous and waits for the result
-        # It returns a list of scraped data objects.
+
         if crawl_result:
-            print(f"Crawl finished successfully! Scraped {len(crawl_result)} pages.")
-            # You can process the results here. For now, we'll just print a summary.
-            for i, page in enumerate(crawl_result):
-                print(f"  - Page {i+1}: {page['metadata']['sourceURL']} ({len(page['markdown'])} chars)")
-            
-            # Example of saving the first page's markdown to a file
-            if len(crawl_result) > 0:
-                output_filename = "adk_docs_scraped.md"
-                with open(output_filename, "w", encoding="utf-8") as f:
-                    # Combine all scraped markdown into one file
-                    for page in crawl_result:
-                        f.write(f"# Source: {page['metadata']['sourceURL']}\n\n")
-                        f.write(page['markdown'])
-                        f.write("\n\n---\n\n")
-                print(f"\nFull markdown content saved to {output_filename}")
+            output_filename = "adk_docs_scraped.md"
+            print(f"Crawl finished. Scraped {len(crawl_result)} pages. Saving content to {output_filename}...")
+
+            with open(output_filename, "w", encoding="utf-8") as f:
+                # Combine all scraped markdown into one file
+                for page in crawl_result:
+                    f.write(f"# Source: {page['metadata']['sourceURL']}\n\n")
+                    f.write(page['markdown'])
+                    f.write("\n\n---\n\n")
+
+            print(f"Full markdown content saved successfully to {output_filename}")
 
         else:
             print("Crawl job did not return any data.")
