@@ -13,6 +13,7 @@
     pkgs.maven
     pkgs.uv
     pkgs.python311Packages.python-dotenv
+    pkgs.python311Packages.openai
     pkgs.nodejs
     # pkgs.nodejs_20
     # pkgs.nodePackages.nodemon
