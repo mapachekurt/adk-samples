@@ -29,7 +29,7 @@ These are the most important rules, learned from previous failures. They must be
 **5. Dependency Management is Per-Agent with `uv`:** This is not a monolithic project. Each agent manages its own dependencies via its `pyproject.toml` file.
     - **Action:** Use `uv` for all Python package management. The correct command to install dependencies for an agent is `uv pip install -e <path_to_agent>`.
 
-**6. Local Tools are MCP Subprocesses:** To provide custom local tools to the IDE, do not deploy a web service. The IDE runs tools as local subprocesses defined in `.idx/mcp.json`.
+**6. Local Tools are MCP Subprocesses:** To provide custom local tools to the IDE, do not deploy a web service. The IDE runs tools as local subprocesses defined in `.idx/mC.json`.
     - **Action:** Create a tool as a script. Add a `command` and `args` entry to `.idx/mcp.json` to execute it. Instruct the user to rebuild the environment to activate it.
 
 **7. Execution Must be Context-Aware:** Commands like `uv run` require a `pyproject.toml` in their execution directory.
@@ -50,6 +50,13 @@ These are the most important rules, learned from previous failures. They must be
 
 **14. History Rewriting is Required for Blocked Secrets:** If a push is blocked due to a secret, `git commit --amend` is not enough. The secret persists in the branch's history. You must perform an interactive rebase or a `git reset --soft` to a commit *before* the secret was introduced, then create a new, clean commit. This requires a `git push --force`.
 
+**15. Contextual CLI Problem Solving (RAG):** When you get stuck, the `openai` CLI is your primary tool for external problem-solving. To make it effective, you **must** provide it with project context.
+    - **Action:** Follow the Retrieval-Augmented Generation (RAG) model:
+        1.  **Retrieve:** Identify the specific local files that are relevant to the problem at hand.
+        2.  **Augment:** Use the `read_file` tool to read their contents. Construct a single, detailed prompt that includes the full content of these files, clearly marked with file paths.
+        3.  **Generate:** Append your specific question or task to this augmented prompt and send it to the `openai` CLI. The resulting answer will be grounded in the actual code of the project.
+
+**16. The Read-Before-Write Mandate:** To prevent catastrophic data loss, you **must** always use `read_file` to get the current content of a file *before* using `write_file` to modify it. Your new content must be a thoughtful update to the existing content, not a blind replacement. Overwriting files is a critical error.
 
 ## General Coding & Development Guidelines
 
