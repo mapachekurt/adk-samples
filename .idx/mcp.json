@@ -23,6 +23,13 @@
         "--port",
         "8000"
       ]
+    },
+    "fetch": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@tokenizin/mcp-npx-fetch"
+      ]
     }
   }
 }
