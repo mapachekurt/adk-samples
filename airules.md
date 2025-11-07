@@ -44,19 +44,25 @@ These are the most important rules, learned from previous failures. They must be
 
 **11. Automate Token Injection:** For GCP tokens, automate fetching and storing them. Use `echo "GCP_ACCESS_TOKEN=$(gcloud auth print-access-token)" > mcp_server/.env` to pipe a fresh token directly into the environment file.
 
-**12. Diagnose MCP Failures:** An `MCP error -32000: Connection closed` means the tool's underlying script is crashing. Suspect a missing dependency (fix in `.idx/dev.nix`) or a missing environment variable (fix with `.env`).
+**12. Diagnose MCP Failures:** An `MCP error -32000: Connection closed` or `spawn ENOENT` error for an MCP process means the tool's underlying script is crashing or could not be found. Suspect a missing dependency (fix in `.idx/dev.nix`) or a missing environment variable (fix with `.env`).
 
 **13. Correct Git History with Amend:** If a secret is accidentally committed, removing it in a new commit is not sufficient. You **must** use `git commit --amend` to modify the faulty commit *before* pushing.
 
 **14. History Rewriting is Required for Blocked Secrets:** If a push is blocked due to a secret, `git commit --amend` is not enough. The secret persists in the branch's history. You must perform an interactive rebase or a `git reset --soft` to a commit *before* the secret was introduced, then create a new, clean commit. This requires a `git push --force`.
 
-**15. Contextual CLI Problem Solving (RAG):** When you get stuck, the `openai` CLI is your primary tool for external problem-solving. To make it effective, you **must** provide it with project context.
+**15. Contextual CLI Problem Solving (RAG):** When you get stuck, the `gemini` CLI is a tool for external problem-solving. To make it effective, you **must** provide it with project context.
     - **Action:** Follow the Retrieval-Augmented Generation (RAG) model:
         1.  **Retrieve:** Identify the specific local files that are relevant to the problem at hand.
         2.  **Augment:** Use the `read_file` tool to read their contents. Construct a single, detailed prompt that includes the full content of these files, clearly marked with file paths.
-        3.  **Generate:** Append your specific question or task to this augmented prompt and send it to the `openai` CLI. The resulting answer will be grounded in the actual code of the project.
+        3.  **Generate:** Append your specific question or task to this augmented prompt and send it to the `gemini` CLI.
 
-**16. The Read-Before-Write Mandate:** To prevent catastrophic data loss, you **must** always use `read_file` to get the current content of a file *before* using `write_file` to modify it. Your new content must be a thoughtful update to the existing content, not a blind replacement. Overwriting files is a critical error.
+**16. The Rule of Safe File Writing:** Before writing to any file, you **must** first use the `read_file` tool to check if the file exists.
+    - **Action:** If the file already exists, you **must** stop, show the user the existing file's contents, and ask for explicit permission before overwriting it.
+    - **Action:** If the file does not exist, you can proceed with writing it. This rule is especially critical for configuration files (`.idx/dev.nix`, `mcp.json`), documentation (`GEMINI.md`), and files that might contain secrets (`.env`).
+
+**17. Direct vs. CLI Tool Invocation:** You have access to a set of tools as direct, first-class function calls (e.g., `fetch_markdown`, `write_file`). You also have access to the `gemini` command-line tool, which is a separate, generative AI agent.
+    - **Action:** When you need to perform a specific, discrete action for which a direct tool function exists, you **must** call that function directly.
+    - **Action:** Do *not* attempt to wrap these direct function calls inside a `gemini` CLI command. Use the `gemini` CLI only for generative tasks, such as summarizing content or answering high-level questions, where the CLI itself will orchestrate the underlying tools.
 
 ## General Coding & Development Guidelines
 
