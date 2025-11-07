@@ -16,6 +16,10 @@
         "-y",
         "@tokenizin/mcp-npx-fetch"
       ]
+    },
+    "firecrawl-mcp": {
+      "command": "npx",
+      "args": ["-y", "firecrawl-mcp"]
     }
   },
   "enabledTools": {
@@ -48,6 +52,7 @@
       "fetch_txt",
       "fetch_json",
       "fetch_markdown"
-    ]
+    ],
+    "firecrawl-mcp": []
   }
 }
