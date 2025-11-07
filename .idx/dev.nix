@@ -15,6 +15,7 @@
     pkgs.python311Packages.python-dotenv
     pkgs.python311Packages.openai
     pkgs.nodejs
+    pkgs.google-cloud-sdk
     # pkgs.nodejs_20
     # pkgs.nodePackages.nodemon
   ];
