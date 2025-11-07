@@ -18,7 +18,8 @@ These are the most important rules, learned from previous failures. They must be
     - **Action:** Before attempting any installation or execution, you **must** consult this file to know which tools (`uv`, `python311`, etc.) are available. Do not assume generic tools like `poetry` exist if they are not in this file.
 
 **3. IDE Workflow is Paramount:** This IDE has a specific UI-driven workflow that overrides standard command-line practices.
-    - **Action:** After modifying `.idx/dev.nix`, you **must** instruct the user to **commit the changes** and then explicitly press the **"Rebuild Environment"** button.
+    - **Action (Environment):** After modifying `.idx/dev.nix`, you **must** instruct the user to **commit the changes** and then explicitly press the **"Rebuild Environment"** button.
+    - **Action (UI Configuration):** Be aware that some configurations are performed through the IDE's graphical interface. For example, the user can add an MCP server using the "Add a server" dialog, which directly modifies `.idx/mcp.json`. Do not distrust a working configuration just because you did not see the command that created it.
     - **MANDATORY "Commit, then Sync" Two-Step:** The workflow for saving code is a two-step process.
         1.  First, you run the `git commit` command to save changes locally.
         2.  Second, you **MUST IMMEDIATELY STOP** all other actions and instruct the user to press the **"Sync Changes"** button to push the local commits to the remote repository. Your *only* response after a successful commit is to issue this instruction.
@@ -31,12 +32,11 @@ These are the most important rules, learned from previous failures. They must be
 **6. Local Tools are MCP Subprocesses:** To provide custom local tools to the IDE, do not deploy a web service. The IDE runs tools as local subprocesses defined in `.idx/mcp.json`.
     - **Action:** Create a tool as a script. Add a `command` and `args` entry to `.idx/mcp.json` to execute it. Instruct the user to rebuild the environment to activate it.
 
-**7. Execution Must be Context-Aware:**
-    - **`uv run`:** This command requires a `pyproject.toml` file in the current directory to define a project. Do not use it for standalone scripts in the root directory.
-    - **Standalone Scripts with `uv`:** To run a script that has dependencies installed via `uv pip install` in the root directory, you **must** execute it using the interpreter from the virtual environment (e.g., `.venv/bin/python your_script.py`). The generic `python3` command will not find the dependencies.
+**7. Execution Must be Context-Aware:** Commands like `uv run` require a `pyproject.toml` in their execution directory.
+    - **Action:** Always run commands from the correct directory. Do not run agent-specific commands from the project root.
 
-**8. Acknowledge Your Blind Spots:** You cannot "see" the IDE's UI, including uncommitted file changes or error pop-ups.
-    - **Action:** If a command fails unexpectedly, your first step is to ask the user if there are any uncommitted changes or UI notifications. Your second step is to run `git status` to get ground truth on the repository's state.
+**8. Acknowledge Your Blind Spots:** You cannot "see" the IDE's UI, including uncommitted file changes, error pop-ups, or graphical dialogs.
+    - **Action:** If a command fails unexpectedly or a configuration file changes without a corresponding command, your first step is to ask the user about any UI actions they may have taken. For example: "Did you recently add a server using the IDE's 'Add a server' dialog?" Your second step is to run `git status` to get ground truth on the repository's state.
 
 **9. Never Commit Secrets:** Committing secrets (API keys, tokens) to the repository, including in configuration files like `.idx/dev.nix`, is a security violation that will block `git push`.
 
@@ -49,10 +49,6 @@ These are the most important rules, learned from previous failures. They must be
 **13. Correct Git History with Amend:** If a secret is accidentally committed, removing it in a new commit is not sufficient. You **must** use `git commit --amend` to modify the faulty commit *before* pushing.
 
 **14. History Rewriting is Required for Blocked Secrets:** If a push is blocked due to a secret, `git commit --amend` is not enough. The secret persists in the branch's history. You must perform an interactive rebase or a `git reset --soft` to a commit *before* the secret was introduced, then create a new, clean commit. This requires a `git push --force`.
-
-**15. Never Commit Log Files:** Log files, such as `firebase-debug.log*`, contain sensitive information and debugging output that should not be part of the repository history. Always add them to `.gitignore`.
-
-**16. Unified Cloud Run Deployment:** To build and deploy a container to Cloud Run, use the `gcloud run deploy --source` command. This single command handles building, pushing, and deploying, which is more reliable than separate steps. Enable the required APIs (`run.googleapis.com`, `artifactregistry.googleapis.com`, `cloudbuild.googleapis.com`) beforehand.
 
 
 ## General Coding & Development Guidelines
