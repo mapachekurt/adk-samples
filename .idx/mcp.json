@@ -19,7 +19,10 @@
     },
     "firecrawl-mcp": {
       "command": "npx",
-      "args": ["-y", "firecrawl-mcp"]
+      "args": [
+        "-y",
+        "firecrawl-mcp"
+      ]
     }
   },
   "enabledTools": {
@@ -53,6 +56,13 @@
       "fetch_json",
       "fetch_markdown"
     ],
-    "firecrawl-mcp": []
+    "firecrawl-mcp": [
+      "firecrawl_scrape",
+      "firecrawl_map",
+      "firecrawl_search",
+      "firecrawl_crawl",
+      "firecrawl_check_crawl_status",
+      "firecrawl_extract"
+    ]
   }
 }
