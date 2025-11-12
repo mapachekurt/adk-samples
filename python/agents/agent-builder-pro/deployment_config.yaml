@@ -1,0 +1,119 @@
+# Deployment Configuration for Agent Builder Pro
+# This file documents the deployment settings for Vertex AI Agent Engine Runtime
+
+deployment:
+  # Agent display name in Vertex AI
+  display_name: "Agent Builder Pro"
+
+  # Agent description
+  description: |
+    Meta-agent system for creating custom Google ADK agents.
+    Guides users through requirements gathering, architecture design,
+    tool specification, code generation, and deployment to Vertex AI.
+
+  # Default GCP location
+  location: "us-central1"
+
+  # Alternative locations (choose one)
+  alternative_locations:
+    - "us-east1"
+    - "us-west1"
+    - "europe-west1"
+    - "europe-west4"
+    - "asia-northeast1"
+
+# Resource configuration
+resources:
+  # Compute resources
+  machine_type: "n1-standard-4"
+
+  # Auto-scaling settings
+  min_instances: 0  # Scale to zero when idle
+  max_instances: 1  # Maximum concurrent instances
+
+  # Staging bucket naming
+  staging_bucket_pattern: "gs://agent-builder-staging-claude-code-{project_id}"
+
+# Required dependencies
+dependencies:
+  # Core ADK dependencies
+  - "google-cloud-aiplatform[agent_engines,adk]>=1.112"
+  - "google-adk>=0.3.0"
+  - "google-genai>=1.0.0"
+  - "pydantic>=2.0.0"
+  - "python-dotenv>=1.0.0"
+
+# Required APIs
+required_apis:
+  - "aiplatform.googleapis.com"      # Vertex AI API
+  - "storage.googleapis.com"          # Cloud Storage API
+  - "compute.googleapis.com"          # Compute Engine API
+
+# Agent architecture
+architecture:
+  type: "SequentialAgent"
+  sub_agents:
+    - name: "requirements_gatherer"
+      type: "LlmAgent"
+      model: "gemini-2.5-pro"
+    - name: "architecture_designer"
+      type: "LlmAgent"
+      model: "gemini-2.5-pro"
+    - name: "tool_specification"
+      type: "LlmAgent"
+      model: "gemini-2.5-pro"
+    - name: "code_generator"
+      type: "LlmAgent"
+      model: "gemini-2.5-pro"
+    - name: "validation_deployment"
+      type: "LlmAgent"
+      model: "gemini-2.5-pro"
+
+# Deployment retry configuration
+retry:
+  max_attempts: 3
+  backoff_strategy: "exponential"  # 2s, 4s, 8s
+  retryable_errors:
+    - "quota"
+    - "rate limit"
+    - "timeout"
+    - "deadline"
+    - "unavailable"
+    - "503"
+    - "429"
+
+# Monitoring and logging
+monitoring:
+  log_level: "INFO"
+  enable_telemetry: true
+
+# Cost optimization
+cost_optimization:
+  # Use min_instances: 0 to avoid idle costs
+  # Agent scales to zero when not in use
+  # Warms up on first request (~30-60 seconds)
+  scale_to_zero: true
+
+  # Estimated costs (as of 2025)
+  estimated_monthly_cost:
+    idle: "$0 (scales to zero)"
+    active: "$50-100/month with moderate usage"
+    note: "Costs vary by usage, model calls, and data transfer"
+
+# Security
+security:
+  # Authentication
+  auth_method: "gcloud application-default credentials"
+
+  # IAM roles required
+  required_roles:
+    - "roles/aiplatform.user"
+    - "roles/storage.objectAdmin"
+    - "roles/serviceusage.serviceUsageAdmin"
+
+  # Secrets management
+  secrets_manager: "environment_variables"
+  never_commit:
+    - "credentials.json"
+    - ".env"
+    - "service-account-key.json"
