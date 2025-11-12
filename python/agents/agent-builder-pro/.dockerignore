@@ -1,0 +1,63 @@
+# .dockerignore for Agent Builder Pro
+
+# --- Version Control ---
+.git
+.gitignore
+.gitattributes
+
+# --- Docker ---
+# Exclude Dockerfile itself, as it's not needed inside the image
+Dockerfile
+.dockerignore
+
+# --- Python ---
+# Virtual environments
+.venv
+venv
+env
+ENV
+
+# Bytecode and cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Packaging and distribution artifacts
+.eggs/
+*.egg-info/
+dist/
+build/
+wheels/
+*.egg
+
+# --- Local Development & Configuration ---
+# Environment variables file (contains secrets)
+.env
+*.env.*
+
+# Local IDE and editor configuration
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Testing ---
+# Exclude tests and test-related artifacts from the production image
+tests/
+.pytest_cache/
+pytest.ini
+.coverage
+coverage.xml
+htmlcov/
+
+# --- Operating System ---
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# --- Logs and Temporary Files ---
+*.log
+*~
