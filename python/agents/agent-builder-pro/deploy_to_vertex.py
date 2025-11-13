@@ -115,7 +115,7 @@ def deploy_agent_to_vertex(
         # The SDK will automatically discover the `root_agent` in `agent.py`
         # It packages the code, builds a container, and deploys it.
         logger.info("Starting deployment process. This may take several minutes...")
-        deployed_agent = aiplatform.Agent.deploy(
+        deployed_agent = aiplatform.gapic.Agent.deploy(
             agent="agent_builder_pro.agent.root_agent",  # Path to the agent object
             agent_id=agent_id,
             display_name="Agent Builder Pro",
